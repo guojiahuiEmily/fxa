@@ -68,6 +68,7 @@ export interface AuthRequest extends Request {
 export interface ProfileClient {
   deleteCache(uid: string): Promise<void>;
   updateDisplayName(uid: string, name: string): Promise<void>;
+  updateAvatarWithUrl(uid: string, picture: string): Promise<void>; // obviously this will need further args.
 }
 
 // Container token types

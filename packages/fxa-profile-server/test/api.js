@@ -41,6 +41,7 @@ const SIZES = require('../lib/img').SIZES;
 
 var imagePath = path.join(__dirname, 'lib', 'firefox.png');
 var imageData = fs.readFileSync(imagePath);
+// var imageUrl = 'www.exampleImage.com';
 
 const SIZE_SUFFIXES = Object.keys(SIZES).map(function (val) {
   if (val === 'default') {

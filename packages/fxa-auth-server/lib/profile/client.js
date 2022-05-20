@@ -14,6 +14,7 @@ const PATH_PREFIX = '/v1';
 const DeleteCacheResponse = isA.any();
 
 const UpdateDisplayNameResponse = isA.any();
+const UpdateAvatarResponse = isA.any();
 
 module.exports = function (log, config, statsd) {
   const ProfileAPI = createBackendServiceAPI(
@@ -44,6 +45,19 @@ module.exports = function (log, config, statsd) {
           response: UpdateDisplayNameResponse,
         }
       },
+      updateAvatarWithUrl: {
+        path: `${PATH_PREFIX}/avatar/updateWithUrl/:uid/:picture`,
+        method: 'POST',
+        validate: {
+          params: {
+            uid: isA.string().required(),
+          },
+          payload: {
+            imageUrl: isA.string().required(),
+          },
+          response: UpdateAvatarResponse,
+        }
+      },
     },
     statsd
   );
@@ -72,5 +86,14 @@ module.exports = function (log, config, statsd) {
         throw err;
       }
     },
+    async updateAvatarWithUrl(uid, picture) {
+      try {
+        return await api.updateAvatarWithUrl(uid, picture)
+        // this might be similar to what we saw in the profile client.
+      } catch (err) {
+        log.error('profile.updateAvatar.failed', { err });
+        throw err;
+      }
+    }
   };
 };

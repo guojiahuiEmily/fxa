@@ -91,6 +91,11 @@ module.exports = [
     config: require('./routes/display_name/post-from-auth-server'),
   },
   {
+    method: 'POST',
+    path: v('/display_name/auth/{uid}'),
+    config: require('./routes/display_name/post-from-auth'),
+  },
+  {
     method: 'DELETE',
     path: v('/cache/{uid}'),
     config: require('./routes/cache/delete'),

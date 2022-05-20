@@ -169,6 +169,7 @@ export class LinkedAccountHandler {
     const userid = idToken.sub;
     const email = idToken.email;
     const name = idToken.name;
+    const pictureUrl = idToken.picture;
 
     let accountRecord;
     let linkedAccountRecord = await this.db.getLinkedAccount(userid, provider);
@@ -180,6 +181,9 @@ export class LinkedAccountHandler {
         await this.db.createLinkedAccount(accountRecord.uid, userid, provider);
         if (name) {
           await this.profile.updateDisplayName(accountRecord.uid, name);
+        }
+        if (pictureUrl) {
+          await this.profile.updateAvatarWithUrl(accountRecord.uid, pictureUrl);
         }
 
         const geoData = request.app.geo;
