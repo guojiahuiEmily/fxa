@@ -16,8 +16,6 @@ const DeleteCacheResponse = isA.any();
 const UpdateDisplayNameResponse = isA.any();
 const UpdateAvatarResponse = isA.any();
 
-const UpdateAvatarResponse = isA.any();
-
 module.exports = function (log, config, statsd) {
   const ProfileAPI = createBackendServiceAPI(
     log,
@@ -60,19 +58,6 @@ module.exports = function (log, config, statsd) {
           response: UpdateAvatarResponse,
         }
       },
-      updateAvatar: {
-        path: `${PATH_PREFIX}/avatar/auth/:uid`,
-        method: 'POST',
-        validate: {
-          params: {
-            uid: isA.string().required(),
-          },
-          payload: {
-            imageUrl: isA.string().required(),
-          },
-          response: UpdateAvatarResponse,
-        }
-      }
     },
     statsd
   );
@@ -103,17 +88,9 @@ module.exports = function (log, config, statsd) {
     },
     async updateAvatarWithUrl(uid, picture) {
       try {
-        return await api.updateProfileName(uid, { imageUrl: picture });
+        return await api.updateAvatarWithUrl(uid, { imageUrl: picture });
       } catch (err) {
-        log.error('profile.updateProfileName.failed', { uid, imageUrl: picture, err});
-        throw err;
-      }
-    },
-    async updateAvatar(uid, imageUrl) {
-      try {
-        return await api.updateAvatar(uid, { imageUrl: imageUrl });
-      } catch (err) {
-        log.error('profile.updateAvatar.failed', { uid, imageUrl, err});
+        log.error('profile.updateAvatarWithUrl.failed', { uid, imageUrl: picture, err});
         throw err;
       }
     },
