@@ -70,6 +70,11 @@ module.exports = [
     config: require('./routes/avatar/upload'),
   },
   {
+    method: 'POST',
+    path: v('/avatar/upload/auth/{uid}'),
+    config: require('./routes/avatar/post-from-auth'),
+  },
+  {
     method: 'DELETE',
     path: v('/avatar/{id?}'),
     config: require('./routes/avatar/delete'),

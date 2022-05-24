@@ -14,6 +14,14 @@ const request = require('./request');
 const WORKER_URL = config.get('worker.url');
 const ACCEPT_ENCODING_HEADER = 'identity';
 
+exports.download = function download(url) {
+  return new P(function(resolve, reject) {
+    request.get(url, null, function(err, res, body) {
+      resolve(body);
+    });
+  });
+};
+
 exports.upload = function upload(id, payload, headers) {
   return new P(function(resolve, reject) {
     var url = WORKER_URL + '/a/' + hex(id);
