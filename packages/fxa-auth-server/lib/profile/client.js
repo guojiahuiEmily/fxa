@@ -88,12 +88,11 @@ module.exports = function (log, config, statsd) {
     },
     async updateAvatarWithUrl(uid, picture) {
       try {
-        return await api.updateAvatarWithUrl(uid, picture)
-        // this might be similar to what we saw in the profile client.
+        return await api.updateProfileName(uid, { imageUrl: picture });
       } catch (err) {
-        log.error('profile.updateAvatar.failed', { err });
+        log.error('profile.updateProfileName.failed', { uid, imageUrl: picture, err});
         throw err;
       }
-    }
+    },
   };
 };

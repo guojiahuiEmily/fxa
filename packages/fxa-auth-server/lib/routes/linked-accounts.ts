@@ -251,6 +251,10 @@ export class LinkedAccountHandler {
           await this.profile.updateDisplayName(accountRecord.uid, name);
         }
 
+        if (pictureUrl) {
+          await this.profile.updateAvatarWithUrl(accountRecord.uid, pictureUrl);
+        }
+
         // Currently, we treat accounts created from a linked account as a new
         // registration and emit the correspond event. Note that depending on
         // where might not be a top of funnel for this completion event.
