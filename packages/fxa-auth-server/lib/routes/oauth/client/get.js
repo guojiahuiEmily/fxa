@@ -7,26 +7,36 @@ const Joi = require('joi');
 
 const AppError = require('../../../oauth/error');
 const validators = require('../../../oauth/validators');
-const MISC_DOCS = require('../../../../docs/swagger/misc-api').default;
+const {
+  default: DESCRIPTIONS,
+} = require('../../../../docs/swagger/shared/descriptions');
+const OAUTH_DOCS = require('../../../../docs/swagger/oauth-api').default;
 
 module.exports = ({ log, oauthDB }) => ({
   method: 'GET',
   path: '/client/{client_id}',
   config: {
-    ...MISC_DOCS.CLIENT_CLIENTID_GET,
+    ...OAUTH_DOCS.CLIENT_CLIENTID_GET,
     cors: { origin: 'ignore' },
     validate: {
       params: {
-        client_id: validators.clientId.required(),
+        client_id: validators.clientId
+          .required()
+          .description(DESCRIPTIONS.clientId + DESCRIPTIONS.clientIdPermission),
       },
     },
     response: {
       schema: Joi.object({
-        id: validators.clientId,
-        name: Joi.string().required(),
-        trusted: Joi.boolean().required(),
-        image_uri: Joi.any(),
-        redirect_uri: Joi.string().required().allow(''),
+        id: validators.clientId.description(
+          DESCRIPTIONS.clientId + ' asking for permission.'
+        ),
+        name: Joi.string().required().description(DESCRIPTIONS.name),
+        trusted: Joi.boolean().required().description(DESCRIPTIONS.trusted),
+        image_uri: Joi.any().description(DESCRIPTIONS.image_uri),
+        redirect_uri: Joi.string()
+          .required()
+          .allow('')
+          .description(DESCRIPTIONS.redirectUri),
       }),
     },
     handler: async function requestInfoEndpoint(req) {

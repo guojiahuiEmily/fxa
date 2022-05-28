@@ -15,7 +15,6 @@ const {
   authenticateClient,
   clientAuthValidators,
 } = require('../../oauth/client');
-const MISC_DOCS = require('../../../docs/swagger/misc-api').default;
 const OAUTH_DOCS = require('../../../docs/swagger/oauth-api').default;
 const DESCRIPTION =
   require('../../../docs/swagger/shared/descriptions').default;
@@ -71,22 +70,29 @@ module.exports = ({ log, oauthDB }) => {
       method: 'POST',
       path: '/destroy',
       config: {
-        ...MISC_DOCS.DESTROY_POST,
+        ...OAUTH_DOCS.DESTROY_POST,
         cors: { origin: 'ignore' },
         validate: {
           headers: clientAuthValidators.headers,
           payload: Joi.object()
             .keys({
-              client_id: clientAuthValidators.clientId.optional(),
+              client_id: clientAuthValidators.clientId
+                .optional()
+                .description(DESCRIPTION.clientId),
               // For historical reasons, we accept and ignore a client_secret if one
               // is provided without a corresponding client_id.
               // https://github.com/mozilla/fxa-oauth-server/pull/198
               client_secret: clientAuthValidators.clientSecret
                 .allow('')
-                .optional(),
-              access_token: validators.accessToken,
-              refresh_token: validators.token,
-              refresh_token_id: validators.token,
+                .optional()
+                .description(DESCRIPTION.clientSecret),
+              access_token: validators.accessToken.description(
+                DESCRIPTION.accessToken
+              ),
+              refresh_token: validators.token.description,
+              refresh_token_id: validators.token.description(
+                DESCRIPTION.refresh_token_id
+              ),
             })
             .rename('token', 'access_token')
             .xor('access_token', 'refresh_token', 'refresh_token_id'),

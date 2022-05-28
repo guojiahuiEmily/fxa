@@ -9,6 +9,10 @@ const TAGS_OAUTH = {
   tags: TAGS.OAUTH,
 };
 
+const TAGS_OAUTH_SERVER = {
+  tags: TAGS.OAUTH_SERVER,
+};
+
 const OAUTH_AUTHORIZATION_POST = {
   ...TAGS_OAUTH,
   description: '/oauth/authorization',
@@ -100,11 +104,134 @@ const OAUTH_TOKEN_POST = {
   },
 };
 
+const AUTHORIZATION_GET = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/authorization',
+  notes: [
+    'This endpoint starts the OAuth flow. A client redirects the user agent to this url. This endpoint will then redirect to the appropriate content-server page.',
+  ],
+};
+
+const AUTHORIZATION_POST = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/authorization',
+  notes: [
+    dedent`
+      This endpoint should be used by the fxa-content-server, requesting that we supply a short-lived code (currently 15 minutes) that will be sent back to the client. This code will be traded for a token at the [token][] endpoint.
+
+      Note:
+
+      Responses
+
+      Implicit Grant - If requesting an implicit grant (token), the response will match the [/v1/token][token] response.
+    `,
+  ],
+};
+
+const DESTROY_POST = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/destroy',
+  notes: [
+    'After a client is done using a token, the responsible thing to do is to destroy the token afterwards. A client can use this route to do so.',
+  ],
+};
+
+const AUTHORIZED_CLIENTS_DESTROY_POST = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/authorized-clients/destroy',
+  notes: [
+    `This endpoint revokes tokens granted to a given client. It must be authenticated with an identity assertion for the user's account.`,
+  ],
+};
+
+const AUTHORIZED_CLIENTS_POST = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/authorized_clients',
+  notes: [
+    dedent`
+      This endpoint returns a list of all OAuth client instances connected to the user's account, including the the scopes granted to each client instance and the time at which it was last active, if available. It must be authenticated with an identity assertion for the user's account
+
+      Note:
+
+      Responses
+
+      For clients that use refresh tokens, each refresh token is taken to represent a separate instance of that client and is returned as a separate entry in the list, with the \`refresh_token_id\` field distinguishing each.
+
+      For clients that only use access tokens, all active access tokens are combined into a single entry in the list, and the \`refresh_token_id\` field will not be present.
+    `,
+  ],
+};
+
+const CLIENT_CLIENTID_GET = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/client/{client_id}',
+  notes: [
+    'This endpoint is for the fxa-content-server to retrieve information about a client to show in its user interface.',
+  ],
+};
+
+const INTROSPECT_POST = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/introspect',
+  notes: [
+    'This endpoint returns the status of the token and meta-information about this token.',
+  ],
+};
+
+const JWKS_GET = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/jwks',
+  notes: [
+    'This endpoint returns the [JWKs](https://datatracker.ietf.org/doc/html/rfc7517) that are used for signing OpenID Connect id tokens.',
+  ],
+};
+
+const KEY_DATA_POST = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/key-data',
+  notes: ['This endpoint returns the required scoped key metadata.'],
+};
+
+const TOKEN_POST = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/token',
+  notes: [
+    dedent`
+      After receiving an authorization grant from the user, clients exercise that grant at this endpoint to obtain tokens that can be used to access attached services for a particular user.
+
+      The following types of grant are possible:
+
+      - \`authorization_code\`: a single-use code as produced by the [authorization][] endpoint, obtained through a redirect-based authorization flow.
+      - \`refresh_token\`: a token previously obtained from this endpoint when using access_type=offline.
+      - \`fxa-credentials\`: an FxA identity assertion, obtained by directly authenticating the user's account.
+    `,
+  ],
+};
+
+const VERIFY_POST = {
+  ...TAGS_OAUTH_SERVER,
+  description: '/v1/verify',
+  notes: [
+    'Attached services can post tokens to this endpoint to learn about which user and scopes are permitted for the token.',
+  ],
+};
+
 const API_DOCS = {
   ACCOUNT_SCOPED_KEY_DATA_POST,
   OAUTH_AUTHORIZATION_POST,
   OAUTH_DESTROY_POST,
   OAUTH_TOKEN_POST,
+  AUTHORIZATION_GET,
+  AUTHORIZATION_POST,
+  DESTROY_POST,
+  AUTHORIZED_CLIENTS_DESTROY_POST,
+  AUTHORIZED_CLIENTS_POST,
+  CLIENT_CLIENTID_GET,
+  INTROSPECT_POST,
+  JWKS_GET,
+  KEY_DATA_POST,
+  TOKEN_POST,
+  VERIFY_POST,
 };
 
 export default API_DOCS;

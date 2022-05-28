@@ -3,26 +3,31 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const Joi = require('joi');
+const {
+  default: DESCRIPTIONS,
+} = require('../../../docs/swagger/shared/descriptions');
 const token = require('../../oauth/token');
 const validators = require('../../oauth/validators');
-const MISC_DOCS = require('../../../docs/swagger/misc-api').default;
+const OAUTH_DOCS = require('../../../docs/swagger/oauth-api').default;
 
 module.exports = ({ log }) => ({
   method: 'POST',
   path: '/verify',
   config: {
-    ...MISC_DOCS.VERIFY_POST,
+    ...OAUTH_DOCS.VERIFY_POST,
     cors: { origin: 'ignore' },
     validate: {
       payload: Joi.object({
-        token: validators.accessToken.required(),
+        token: validators.accessToken
+          .required()
+          .description(DESCRIPTIONS.token),
       }),
     },
     response: {
       schema: Joi.object({
-        user: Joi.string().required(),
-        client_id: Joi.string().required(),
-        scope: Joi.array(),
+        user: Joi.string().required().description(DESCRIPTIONS.user),
+        client_id: Joi.string().required().description(DESCRIPTIONS.clientId),
+        scope: Joi.array().description(DESCRIPTIONS.scope),
         generation: Joi.number().min(0),
         profile_changed_at: Joi.number().min(0),
       }),

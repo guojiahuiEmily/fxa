@@ -6,28 +6,47 @@ const Joi = require('joi');
 const validators = require('../../../oauth/validators');
 const verifyAssertion = require('../../../oauth/assertion');
 const authorizedClients = require('../../../oauth/authorized_clients');
-const MISC_DOCS = require('../../../../docs/swagger/misc-api').default;
+const {
+  default: DESCRIPTIONS,
+} = require('../../../../docs/swagger/shared/descriptions');
+const OAUTH_DOCS = require('../../../../docs/swagger/oauth-api').default;
 
 module.exports = () => ({
   method: 'POST',
   path: '/authorized-clients',
   config: {
-    ...MISC_DOCS.AUTHORIZED_CLIENTS_POST,
+    ...OAUTH_DOCS.AUTHORIZED_CLIENTS_POST,
     cors: { origin: 'ignore' },
     validate: {
       payload: Joi.object({
-        assertion: validators.assertion.required(),
+        assertion: validators.assertion
+          .required()
+          .description(DESCRIPTIONS.assertion),
       }),
     },
     response: {
       schema: Joi.array().items(
         Joi.object({
-          client_id: validators.clientId,
-          refresh_token_id: validators.token.optional(),
-          client_name: Joi.string().required(),
-          created_time: Joi.number().min(0).required(),
-          last_access_time: Joi.number().min(0).required().allow(null),
-          scope: Joi.array().items(Joi.string()).required(),
+          client_id: validators.clientId.description(DESCRIPTIONS.clientId),
+          refresh_token_id: validators.token
+            .optional()
+            .description(DESCRIPTIONS.refresh_token_id),
+          client_name: Joi.string()
+            .required()
+            .description(DESCRIPTIONS.clientName),
+          created_time: Joi.number()
+            .min(0)
+            .required()
+            .description(DESCRIPTIONS.createdTime),
+          last_access_time: Joi.number()
+            .min(0)
+            .required()
+            .allow(null)
+            .description(DESCRIPTIONS.lastAccessTime),
+          scope: Joi.array()
+            .items(Joi.string())
+            .required()
+            .description(DESCRIPTIONS.scope),
         })
       ),
     },

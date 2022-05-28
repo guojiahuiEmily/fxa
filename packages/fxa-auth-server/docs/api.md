@@ -25,6 +25,7 @@ see [`fxa-auth-client`](https://github.com/mozilla/fxa/tree/main/packages/fxa-au
     - [Defined errors](#defined-errors)
     - [Responses from intermediary servers](#responses-from-intermediary-servers)
   - [Validation](#validation)
+- [API endpoints](https://mozilla.github.io/ecosystem-platform/api/auth-server)
 - [Back-off protocol](#back-off-protocol)
 
 ## Overview

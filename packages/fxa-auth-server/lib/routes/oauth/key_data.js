@@ -10,7 +10,9 @@ const validators = require('../../oauth/validators');
 const verifyAssertion = require('../../oauth/assertion');
 const { validateRequestedGrant } = require('../../oauth/grant');
 const { makeAssertionJWT } = require('../../oauth/util');
-const MISC_DOCS = require('../../../docs/swagger/misc-api').default;
+const {
+  default: DESCRIPTIONS,
+} = require('../../../docs/swagger/shared/descriptions');
 const OAUTH_DOCS = require('../../../docs/swagger/oauth-api').default;
 
 /**
@@ -97,13 +99,15 @@ module.exports = ({ log, oauthDB }) => {
       method: 'POST',
       path: '/key-data',
       config: {
-        ...MISC_DOCS.KEY_DATA_POST,
+        ...OAUTH_DOCS.KEY_DATA_POST,
         cors: { origin: 'ignore' },
         validate: {
           payload: Joi.object({
-            client_id: validators.clientId,
-            assertion: validators.assertion.required(),
-            scope: validators.scope.required(),
+            client_id: validators.clientId.description(DESCRIPTIONS.clientId),
+            assertion: validators.assertion
+              .required()
+              .description(DESCRIPTIONS.assertion),
+            scope: validators.scope.required().description(DESCRIPTIONS.scope),
           }),
         },
         response: {
